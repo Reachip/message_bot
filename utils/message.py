@@ -2,6 +2,7 @@ import subprocess
 from os import path, listdir, environ
 from discord.ext.commands.bot import Bot
 from discord.ext.commands.core import command
+from .env_var import get_env_var
 
 
 class Message:
@@ -26,10 +27,7 @@ class MessageCommandList:
     def __init__(self, bot):
         self.bot = bot
         self.command_files = []
-        cmd_files = environ.get("CMD_FILES")
-
-        if cmd_files is None:
-            raise Exception("You need a CMD_FILES environnement variable.")
+        cmd_files = get_env_var("CMD_FILES")
 
         for filename in listdir(cmd_files):
             if filename.endswith(".md"):
