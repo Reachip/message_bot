@@ -2,17 +2,19 @@ import os
 import argparse
 from pathlib import Path
 from discord.ext.commands.bot import Bot
-from message_bot.utils import MessageCommand, MessageCommandList
+
+from message_bot.utils import MessageCommand, MessageCommandList, CommandNameDoesntExist
+from message_bot.utils import get_env_var
 
 bot = Bot("!")
 msg_command_list = MessageCommandList(bot)
-cmd_files = os.environ.get("CMD_FILES")
+cmd_files = get_env_var("CMD_FILES")
 
 
 def required_command_exist(fn):
     def wrapper(args):
         if not args.command_name in msg_command_list.command_files:
-            raise Exception("This command name doesn't exist ...")
+            raise CommandNameDoesntExist("This command name doesn't exist ...")
 
         fn(args)
 
@@ -74,9 +76,5 @@ if run_the_bot == "y":
     for msg_command in msg_command_list.get_message_objects():
         msg_command.add_message_commmand()
 
-    token = os.environ.get("TOKEN")
-
-    if token is None:
-        raise Exception("You need a TOKEN environnement variable.") 
-    
+    token = get_env_var("TOKEN")
     bot.run(token)
